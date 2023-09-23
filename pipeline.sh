@@ -25,7 +25,12 @@ robot export --input $TARGET_PATH/reacto.ttl --header "IRI|LABEL" --format tsv -
 join -t "	" -a 1 -j 1 -o 1.1,2.2,1.3,1.4 <(sort $REPORTS_PATH/deleted_regulators.tsv) <(sort -n $TARGET_PATH/reacto_labels.tsv) > $REPORTS_PATH/deleted_regulators_labels.tsv
 
 cp $REACTO_OUT/blazegraph.jnl $REACTO_OUT/reacto-models-bg.jnl
-wget -P $TARGET_PATH http://current.geneontology.org/ontology/extensions/go-lego-reacto.owl
+
+if [ -f "$TARGET_PATH/go-lego-reacto.owl" ]; then
+    echo "GO Lego Reacto file already exists. Skipping download."
+else
+    wget -P $TARGET_PATH http://current.geneontology.org/ontology/extensions/go-lego-reacto.owl
+fi
 
 /workdir/bin/blazegraph-runner-${BLAZEGRAPH_RUNNER_VERSION}/bin/blazegraph-runner load --journal=$REACTO_OUT/reacto-models-bg.jnl --use-ontology-graph=true --informat=rdfxml $TARGET_PATH/go-lego-reacto.owl
 /workdir/bin/blazegraph-runner-${BLAZEGRAPH_RUNNER_VERSION}/bin/blazegraph-runner reason --journal=$REACTO_OUT/reacto-models-bg.jnl --ontology="http://purl.obolibrary.org/obo/go/extensions/go-lego-reacto.owl" --source-graphs-query="/workdir/pathways2GO/exchange/src/main/resources/org/geneontology/gocam/exchange/manuscript-graphs.rq" --target-graph=”http://model.geneontology.org/inferences” --merge-sources=false --parallelism=8 --reasoner=arachne
