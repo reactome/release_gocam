@@ -20,9 +20,13 @@ RUN git clone https://github.com/ontodev/robot.git && \
 
 ENV PATH=/workdir/robot/bin:$PATH
 
+RUN wget https://github.com/geneontology/pathways2GO/releases/download/v1.1.5/biopax2go.jar
+
 RUN git clone https://github.com/geneontology/pathways2GO.git && \
-    cd pathways2GO/exchange && \
-    mvn package -DskipTests
+    cd pathways2GO/exchange/ && \
+    git checkout v1.1.5 && \
+    mkdir bin && cd bin && \
+    wget https://github.com/geneontology/pathways2GO/releases/download/v1.1.5/biopax2go.jar
 
 RUN mkdir bin
 
