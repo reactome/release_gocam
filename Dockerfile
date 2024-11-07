@@ -35,7 +35,7 @@ RUN cd bin && \
     tar zxvf blazegraph-runner-${BLAZEGRAPH_RUNNER_VERSION}.tgz && \
     rm blazegraph-runner-${BLAZEGRAPH_RUNNER_VERSION}.tgz
 
-RUN cd bin && wget https://github.com/geneontology/minerva/releases/download/v0.6.2/minerva-cli.jar 
+RUN cd bin && wget https://github.com/geneontology/minerva/releases/download/v0.6.3/minerva-cli.jar 
 
 COPY pipeline.sh .
 
