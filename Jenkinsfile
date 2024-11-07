@@ -49,8 +49,9 @@ pipeline{
                     sh "sudo service tomcat9 stop"
                     sh "docker run -v $(pwd)/${OUTPUT_FOLDER}:/reactome_gen reactome-pathway2go:latest"
                     sh "mkdir -p ${downloadPath}/gocam"
-                    sh "rm -f ${downloadPath}/gocam/*"
-                    sh "mv ${OUTPUT_DIR}/reacto-out/*.ttl ${downloadPath}/gocam/
+                    sh "mv ${OUTPUT_DIR}/reacto-out/*.ttl ${downloadPath}/gocam/"
+                    sh "cd ${downloadPath} && zip -r gocam.zip gocam/"
+                    sh "rm -rf ${downloadPath}/gocam"
                     sh "sudo service mysql start"
                     sh "sudo service tomcat9 start"
                     }
@@ -72,4 +73,3 @@ pipeline{
         }
     }
 }
-
