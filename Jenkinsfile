@@ -47,7 +47,7 @@ pipeline{
                     // This is a very memory-intensive step, and as such it is necessary to stop unused services to get it to run to completion.
                     sh "sudo service mysql stop"
                     sh "sudo service tomcat9 stop"
-                    sh "docker run -v $(pwd)/${OUTPUT_FOLDER}:/reactome_gen reactome-pathway2go:latest"
+                    sh "docker run -v \$(pwd)/${OUTPUT_FOLDER}:/reactome_gen reactome-pathway2go:latest"
                     sh "mkdir -p ${downloadPath}/gocam"
                     sh "mv ${OUTPUT_DIR}/reacto-out/*.ttl ${downloadPath}/gocam/"
                     sh "cd ${downloadPath} && zip -r gocam.zip gocam/"
