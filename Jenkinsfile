@@ -54,7 +54,6 @@ pipeline{
                     sh "rm -rf ${downloadPath}/gocam"
                     sh "sudo service mysql start"
                     sh "sudo service tomcat9 start"
-                    }
                 }
             }
         }
