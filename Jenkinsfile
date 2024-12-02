@@ -43,7 +43,7 @@ pipeline{
                     def downloadPath = "${env.ABS_DOWNLOAD_PATH}/${releaseVersion}"
 
                     sh "mkdir -p ${OUTPUT_DIR}"
-                    sh "cp ${downloadPath}/biopax.zip ${OUTPUT_DIR}
+                    sh "cp ${downloadPath}/biopax.zip ${OUTPUT_DIR}"
                     // This is a very memory-intensive step, and as such it is necessary to stop unused services to get it to run to completion.
                     sh "sudo service mysql stop"
                     sh "sudo service tomcat9 stop"
