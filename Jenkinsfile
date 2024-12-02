@@ -65,7 +65,7 @@ pipeline{
                 script{
                     def releaseVersion = utils.getReleaseVersion()
                     def dataFiles = ["${OUTPUT_DIR}/reacto_out/*"]
-                    def logFiles = ["${OUTPUT_DIR}/reports/*]
+                    def logFiles = ["${OUTPUT_DIR}/reports/*"]
                     def foldersToDelete = []
                     utils.cleanUpAndArchiveBuildFiles("go_cams", dataFiles, logFiles, foldersToDelete)
                 }
