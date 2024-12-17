@@ -48,10 +48,9 @@ pipeline{
                     sh "sudo service mysql stop"
                     sh "sudo service tomcat9 stop"
                     sh "docker run -v \$(pwd)/${OUTPUT_DIR}:/reactome_gen reactome-pathway2go:latest"
-                    sh "mkdir -p ${downloadPath}/gocam"
-                    sh "mv ${OUTPUT_DIR}/reacto-out/*.ttl ${downloadPath}/gocam/"
-                    sh "cd ${downloadPath} && zip -r gocam.zip gocam/"
-                    sh "rm -rf ${downloadPath}/gocam"
+                    sh "cd ${OUTPUT_DIR}/reacto-out; tar -czvf go-cams.tar.gz *.ttl"
+                    sh "mv ${OUTPUT_DIR}/reacto-out/go-cams.tar.gz ${downloadPath}"
+                    sh "rm -rf ${OUTPUT_DIR}/reacto-out"
                     sh "sudo service mysql start"
                     sh "sudo service tomcat9 start"
                 }
@@ -63,7 +62,7 @@ pipeline{
             steps{
                 script{
                     def releaseVersion = utils.getReleaseVersion()
-                    def dataFiles = ["${OUTPUT_DIR}/reacto_out/*"]
+                    def dataFiles = []
                     def logFiles = ["${OUTPUT_DIR}/reports/*"]
                     def foldersToDelete = []
                     utils.cleanUpAndArchiveBuildFiles("go_cams", dataFiles, logFiles, foldersToDelete)
