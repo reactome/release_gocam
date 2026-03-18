@@ -43,16 +43,21 @@ pipeline{
                     def downloadPath = "${env.ABS_DOWNLOAD_PATH}/${releaseVersion}"
 
                     sh "mkdir -p ${OUTPUT_DIR}"
+                    sh "sudo rm ${OUTPUT_DIR}/* -rf"
                     sh "cp ${downloadPath}/biopax.zip ${OUTPUT_DIR}"
                     // This is a very memory-intensive step, and as such it is necessary to stop unused services to get it to run to completion.
                     sh "sudo service mysql stop"
                     sh "sudo service tomcat9 stop"
-                    sh "docker run -v \$(pwd)/${OUTPUT_DIR}:/reactome_gen reactome-pathway2go:latest"
-                    sh "cd ${OUTPUT_DIR}/reacto-out; tar -czvf go-cams.tar.gz *.ttl"
-                    sh "mv ${OUTPUT_DIR}/reacto-out/go-cams.tar.gz ${downloadPath}"
-                    sh "rm -rf ${OUTPUT_DIR}/reacto-out"
+                    sh "cd /home/awright/gitroot/reactome_chatbot/ && docker-compose down"
+                    sh "docker run --name $CONT_NAME -v \$(pwd)/${OUTPUT_DIR}:/reactome_gen $ECR_URL:latest"
+                    sh "mkdir -p ${downloadPath}/gocam"
+                    sh "sudo mv ${OUTPUT_DIR}/reacto-out/*.ttl ${downloadPath}/gocam/"
+                    sh "sudo chown -R www-data:reactome ${downloadPath}/gocam/"
+                    sh "cd ${downloadPath} && zip -r gocam.zip gocam/"
+                    sh "sudo rm -rf ${downloadPath}/gocam"
                     sh "sudo service mysql start"
                     sh "sudo service tomcat9 start"
+                    sh "cd /home/awright/gitroot/reactome_chatbot/ && docker-compose up -d"
                 }
             }
         }
@@ -62,9 +67,13 @@ pipeline{
             steps{
                 script{
                     def releaseVersion = utils.getReleaseVersion()
-                    def dataFiles = []
+                    def dataFiles = ["${OUTPUT_DIR}/reacto-out/*"]
                     def logFiles = ["${OUTPUT_DIR}/reports/*"]
                     def foldersToDelete = []
+                    
+                    sh "sudo chown -R jenkins:jenkins ${OUTPUT_DIR}/reacto-out/"
+                    sh "sudo chown -R jenkins:jenkins ${OUTPUT_DIR}/reports/"
+                    
                     utils.cleanUpAndArchiveBuildFiles("go_cams", dataFiles, logFiles, foldersToDelete)
                 }
             }
