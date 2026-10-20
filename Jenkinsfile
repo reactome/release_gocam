@@ -47,8 +47,8 @@ pipeline{
                     sh "cp ${downloadPath}/biopax.zip ${OUTPUT_DIR}"
                     // This is a very memory-intensive step, and as such it is necessary to stop unused services to get it to run to completion.
                     sh "sudo service mysql stop"
-                    sh "sudo service tomcat9 stop"
-                    sh "cd /home/awright/gitroot/reactome_chatbot/ && docker-compose down"
+                    sh "sudo service tomcat stop"
+                    sh "cd /home/awright/gitroot/reactome_chatbot/ && docker compose down"
                     sh "docker run --name $CONT_NAME -v \$(pwd)/${OUTPUT_DIR}:/reactome_gen $ECR_URL:latest"
                     sh "mkdir -p ${downloadPath}/gocam"
                     sh "sudo mv ${OUTPUT_DIR}/reacto-out/*.ttl ${downloadPath}/gocam/"
@@ -56,8 +56,8 @@ pipeline{
                     sh "cd ${downloadPath} && zip -r gocam.zip gocam/"
                     sh "sudo rm -rf ${downloadPath}/gocam"
                     sh "sudo service mysql start"
-                    sh "sudo service tomcat9 start"
-                    sh "cd /home/awright/gitroot/reactome_chatbot/ && docker-compose up -d"
+                    sh "sudo service tomcat start"
+                    sh "cd /home/awright/gitroot/reactome_chatbot/ && docker compose up -d"
                 }
             }
         }
